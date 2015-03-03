@@ -9,6 +9,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import sun.security.jca.GetInstance;
+import ubu.gii.dass.c01.NotFreeInstanceException;
+import ubu.gii.dass.c01.Reusable;
+import ubu.gii.dass.c01.ReusablePool;
+
 /**
  * @author daniel
  *
@@ -19,7 +24,12 @@ public class ReusablePoolTest {
 	 * @throws java.lang.Exception
 	 */
 	@Before
-	public void setUp() throws Exception {
+	public void setUp(){
+
+		ReusablePool r = ReusablePool.getInstance();
+
+		// Lo vaciamos
+
 	}
 
 	/**
@@ -34,7 +44,14 @@ public class ReusablePoolTest {
 	 */
 	@Test
 	public void testGetInstance() {
-		fail("Not yet implemented");
+
+		ReusablePool r1 = ReusablePool.getInstance();
+		ReusablePool r2 = ReusablePool.getInstance();
+
+		assertNotNull("El objeto 1 es null", r1);
+		assertNotNull("El objeto 2 es null", r1);
+		assertEquals("Las 2 instancias no son iguales, error singleton", r1, r2);
+
 	}
 
 	/**
@@ -42,15 +59,18 @@ public class ReusablePoolTest {
 	 */
 	@Test
 	public void testAcquireReusable() {
-		fail("Not yet implemented");
+		
 	}
 
 	/**
-	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}.
+	 * Test method for
+	 * {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}
+	 * .
 	 */
 	@Test
 	public void testReleaseReusable() {
-		fail("Not yet implemented");
+
+	
 	}
 
 }
