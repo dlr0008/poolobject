@@ -4,18 +4,16 @@
 package ubu.gii.dass.test.c01;
 
 import static org.junit.Assert.*;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import sun.security.jca.GetInstance;
 import ubu.gii.dass.c01.NotFreeInstanceException;
 import ubu.gii.dass.c01.Reusable;
 import ubu.gii.dass.c01.ReusablePool;
 
 /**
- * @author daniel
+ * @author Roberto Miranda
+ * @author Daniel Lozano
  *
  */
 public class ReusablePoolTest {
@@ -25,11 +23,11 @@ public class ReusablePoolTest {
 	 */
 	@Before
 	public void setUp(){
-
+		
 		ReusablePool r = ReusablePool.getInstance();
-
-		// Lo vaciamos
-
+		
+		//Lo vaciamos
+		
 	}
 
 	/**
@@ -57,8 +55,19 @@ public class ReusablePoolTest {
 	/**
 	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#acquireReusable()}.
 	 */
-	@Test
+	@Test(expected = NotFreeInstanceException.class)
 	public void testAcquireReusable() {
+		
+		ReusablePool rP=ReusablePool.getInstance();
+		
+		try {
+			rP.acquireReusable();
+			rP.acquireReusable();
+			rP.acquireReusable();
+		} catch (NotFreeInstanceException e) {
+			System.err.println(e);
+		}
+		
 		
 	}
 
@@ -69,7 +78,17 @@ public class ReusablePoolTest {
 	 */
 	@Test
 	public void testReleaseReusable() {
-
+		
+		ReusablePool rP=ReusablePool.getInstance();
+		Reusable r;
+		try {
+			r = rP.acquireReusable();
+			rP.releaseReusable(r);
+			rP.releaseReusable(r);
+			rP.releaseReusable(r);
+		} catch (NotFreeInstanceException e) {
+			System.err.println(e);
+		}
 	
 	}
 
