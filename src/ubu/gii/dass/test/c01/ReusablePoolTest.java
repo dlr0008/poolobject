@@ -3,12 +3,15 @@
  */
 package ubu.gii.dass.test.c01;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
 import ubu.gii.dass.c01.NotFreeInstanceException;
 import ubu.gii.dass.c01.Reusable;
 import ubu.gii.dass.c01.ReusablePool;
@@ -20,8 +23,9 @@ import ubu.gii.dass.c01.ReusablePool;
  */
 public class ReusablePoolTest {
 
-	private ArrayList<Reusable> reusables = new ArrayList<Reusable>(2);;
 	private final int MAX_REUSABLES = 2;
+	private ArrayList<Reusable> reusables = new ArrayList<Reusable>(
+			MAX_REUSABLES);;
 
 	/**
 	 * @throws java.lang.Exception
@@ -31,7 +35,7 @@ public class ReusablePoolTest {
 
 		ReusablePool r = ReusablePool.getInstance();
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < MAX_REUSABLES; i++) {
 			try {
 				reusables.add(r.acquireReusable());
 			} catch (NotFreeInstanceException e) {
@@ -44,6 +48,7 @@ public class ReusablePoolTest {
 	 */
 	@After
 	public void tearDown() {
+
 		ReusablePool rP = ReusablePool.getInstance();
 
 		for (Reusable r : reusables) {
@@ -51,22 +56,6 @@ public class ReusablePoolTest {
 		}
 
 		reusables.clear();
-	}
-
-	/**
-	 * Test para el metodo {@link ubu.gii.dass.c01.ReusablePool#getInstance()}.
-	 * Que comprueba que se implementa correctamente el patrón Singleton
-	 */
-	@Test
-	public void testGetInstance() {
-
-		ReusablePool r1 = ReusablePool.getInstance();
-		ReusablePool r2 = ReusablePool.getInstance();
-
-		assertNotNull("El objeto 1 es null", r1);
-		assertNotNull("El objeto 2 es null", r1);
-		assertEquals("Las 2 instancias no son iguales, error singleton", r1, r2);
-
 	}
 
 	/**
@@ -82,6 +71,7 @@ public class ReusablePoolTest {
 		ReusablePool rP = ReusablePool.getInstance();
 
 		for (int i = 0; i <= MAX_REUSABLES - 1; i++) {
+			rP.releaseReusable(reusables.get(i));
 			assertEquals("Los objetos reusable no son iguales",
 					rP.acquireReusable(), reusables.get(i));
 		}
@@ -105,21 +95,17 @@ public class ReusablePoolTest {
 	}
 
 	/**
-	 * Test para el metodo
-	 * {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}
-	 * Que comprueba que no deja añadir valores Nulos.
-	 * 
-	 * @throws NotFreeInstanceException
+	 * Test method for {@link ubu.gii.dass.c01.ReusablePool#getInstance()}.
 	 */
 	@Test
-	public void testReleaseReusableAddNull() throws NotFreeInstanceException {
+	public void testGetInstance() {
 
-		ReusablePool rP = ReusablePool.getInstance();
-		Reusable r = null;
+		ReusablePool r1 = ReusablePool.getInstance();
+		ReusablePool r2 = ReusablePool.getInstance();
 
-		r = rP.acquireReusable();
-		rP.releaseReusable(null);
-		assertNotNull(rP.acquireReusable());
+		assertNotNull("El objeto 1 es null", r1);
+		assertNotNull("El objeto 2 es null", r2);
+		assertEquals("Las 2 instancias no son iguales, error singleton", r1, r2);
 
 	}
 
@@ -132,11 +118,33 @@ public class ReusablePoolTest {
 	public void testReleaseReusable() throws NotFreeInstanceException {
 
 		ReusablePool rP = ReusablePool.getInstance();
-		Reusable r = null;
+		for (int i = 0; i <= MAX_REUSABLES - 1; i++) {
+			rP.releaseReusable(reusables.get(i));
+			assertEquals("Los objetos reusable no son iguales",
+					rP.acquireReusable(), reusables.get(i));
+		}
 
-		r = rP.acquireReusable();
-		rP.releaseReusable(r);
-		assertEquals("El objeto", r, rP.acquireReusable());
+	}
+
+	/**
+	 * Test para el metodo
+	 * {@link ubu.gii.dass.c01.ReusablePool#releaseReusable(ubu.gii.dass.c01.Reusable)}
+	 * Que comprueba que no deja añadir valores Nulos.
+	 * 
+	 * @throws NotFreeInstanceException
+	 */
+	@Test
+	public void testReleaseReusableAddNull() throws NotFreeInstanceException {
+
+		ReusablePool rP = ReusablePool.getInstance();
+
+		for (int i = 0; i <= MAX_REUSABLES - 1; i++) {
+			rP.releaseReusable(reusables.get(i));
+		}
+
+		Reusable r = rP.acquireReusable();
+		rP.releaseReusable(null);
+		assertNotNull("El objeto reusable es nulo", rP.acquireReusable());
 
 	}
 
